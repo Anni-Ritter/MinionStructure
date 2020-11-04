@@ -27,9 +27,21 @@ namespace MinionStructure
                 Console.WriteLine("Minion: {0} {1} {2}", data.Name, data.Age, data.TownId);
             }
             Console.WriteLine();
+
+            DoublyLinkedList<Minion> minionsIndex = new DoublyLinkedList<Minion>();
+            minionsIndex.Add(new Minion(6, "Felix", 21, 2));
+            minionsIndex.Add(new Minion(7, "Han", 22, 2));
+            minionsIndex.Add(minion);
+            Console.WriteLine(minionsIndex[0].Name + " " + minionsIndex[0].Age + " " + minionsIndex[0].TownId);
+            Console.WriteLine(minionsIndex[1].Name + " " + minionsIndex[1].Age + " " + minionsIndex[1].TownId);
+            Console.WriteLine(minionsIndex[2].Name + " " + minionsIndex[2].Age + " " + minionsIndex[2].TownId);
+
+            Minion minion1 = new Minion(10, "Jimin", 21, 2);
+            Minion minion2 = new Minion(11, "Lucas", 21, 1);
+            Console.WriteLine(minion1.CompareTo(minion2));
         }
 
-        public class Minion
+        public class Minion : IComparable<Minion>
         {
             public int Id { get; set; }
             public String Name { get; set; }
@@ -43,7 +55,16 @@ namespace MinionStructure
                 Age = age;
                 TownId = townId;
             }
+            public int CompareTo(Minion other)
+            {
+                var result = this.Name.CompareTo(other.Name);
+                if (result == 0)
+                {
+                    result = this.Age.CompareTo(other.Age);
+                }
 
+                return result;
+            }
         }
 
         public class Node<T>
@@ -168,6 +189,28 @@ namespace MinionStructure
 
             public int Count { get { return count; } }
 
+            public T this[int index]
+            {
+                get
+                {
+                   
+                    Node<T> current = head;
+                    if (index < 0)
+                    {
+                        throw new Exception("Index less 0");
+                    }
+                    for(int i = 0; i < index; i++ )
+                    {
+                           if(current.Next == null)
+                           {
+                               throw new Exception("Next element is empty");
+                           }
+                        current = current.Next;
+                    }
+                    return current.Data;
+                }
+            }
+
             public IEnumerator<T> GetEnumerator()
             {
                 Node<T> current = head;
@@ -188,5 +231,19 @@ namespace MinionStructure
 
             }
         }
+
+        public class Comparator: IComparer<Minion>
+	    {
+		    public int Compare(Minion x, Minion y)
+		    {
+		    	var result = x.Name.CompareTo(y.Name);
+		    	if (result == 0)
+		    	{
+		    		result = x.Age.CompareTo(y.Age);
+		    	}
+
+		    	return result;
+		    }
+	    }
     }
 }
